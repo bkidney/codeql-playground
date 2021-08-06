@@ -34,7 +34,6 @@
 #include <arpa/inet.h>
 #include <time.h>
 #include <stdlib.h>
-#include <sys/nv.h>
 #include "gettime.h"
 
 #define SERVER_SOCK_ENV "SERVER_SOCK"
@@ -113,20 +112,6 @@ int main(int argc, char** argv)
 		 
 	}
 	
-	// This part is for remote_paired mode to make the supervisor awar that the client is done
-	char* sock_env = getenv(SERVER_SOCK_ENV);
-	if(sock_env != NULL) {
-		int sock = atoi(sock_env);
-		nvlist_t* nvl = nvlist_create(0);
-		nvlist_add_string(nvl, "command", "last");
-
-		if (nvlist_send(sock, nvl) < 0) {
-			nvlist_destroy(nvl);
-			err(1, "nvlist_send() failed");
-		}
-		nvlist_destroy(nvl);
-	}
-
 	return 0;
 }
 
